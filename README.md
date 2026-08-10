@@ -153,4 +153,4 @@ The project is less about building another tool marketplace than about reasoning
 
 That problem generalizes well beyond BoxFetch. It appears anywhere AI systems cross from recommendation into action.
 
-[Back to profile](https://github.com/Andy11-cpu)
+[Architecture](ARCHITECTURE.md) · [Technical decisions](TECHNICAL_DECISIONS.md) · [Validation](VALIDATION.md) · [Back to profile](https://github.com/Andy11-cpu)
