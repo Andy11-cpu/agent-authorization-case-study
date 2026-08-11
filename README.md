@@ -2,27 +2,27 @@
 
 ## Controlled execution infrastructure for AI agents
 
-BoxFetch addresses a narrow but consequential problem: how to let software agents acquire and execute useful capabilities without giving them unrestricted authority over money, credentials, infrastructure, or deletion.
+BoxFetch addresses a consequential problem in agentic systems: how to let software acquire and execute useful capabilities while keeping money, credentials, infrastructure changes, and deletion under explicit authority.
 
-The private product repository contains the full implementation. This public case study documents the architecture, control model, design decisions, corrections, and validation strategy without publishing proprietary source code or security-sensitive operational detail.
+The implementation remains private. This case study covers the control architecture, the corrections that shaped it, and the evidence used to decide when an execution path is ready.
 
 ## My role
 
-I am the founder and technical product lead for BoxFetch. I own the product model, authority architecture, acceptance criteria, and release decisions described here, and I review implementation through source, tests, proof harnesses, and end-to-end system evidence. Development uses AI-assisted engineering tools under my direction; this is not a claim that I personally typed every line of the implementation.
+I am the founder and technical product lead for BoxFetch. I own the product model, authority architecture, acceptance criteria, and release decisions described here, and I review implementation through source, tests, proof harnesses, and end-to-end system evidence. AI-assisted engineering tools are part of the build workflow; technical direction and acceptance remain mine.
 
 **Period:** active development in 2026.  
-**Current status:** authenticated marketplace and agent surfaces, OAuth/MCP access, controlled-run orchestration, owner approval UI, durable product state, and a constrained standalone runtime are implemented. Six canonical BoxFetch Originals exist; one currently has a reviewed hosted execution path while the others remain acquisition-only until their execution adapters earn separate evidence.
+**Current status:** the authenticated marketplace and agent surfaces, OAuth/MCP access, controlled-run orchestration, owner approval UI, durable product state, and constrained standalone runtime are implemented. Six canonical BoxFetch Originals exist; one currently has a reviewed hosted execution path, while the others remain acquisition-only until their execution adapters earn separate evidence.
 
 ## Problem
 
-Most agent systems are easy to make impressive in a demo and difficult to make trustworthy once they can create economic or operational consequences. The harder questions are not whether an agent can call a tool, but whether the system can answer:
+Once an agent can create economic or operational consequences, tool access is no longer the hard part. The system has to answer more demanding questions:
 
 - what the agent is authorized to do now
 - which decisions require a human
 - whether a request can be replayed or duplicated
 - what happens after an ambiguous provider response
 - whether purchase entitlement implies execution authority
-- how permissions can step up without silently broadening the rest of the grant
+- how permissions step up without silently broadening the rest of the grant
 - whether spending limits remain enforceable across repeated actions
 - whether durable evidence exists for what was approved, executed, verified, or torn down
 
@@ -47,9 +47,9 @@ No single interface owns the full authority chain.
 
 ### Scope model
 
-The system supports OAuth authorization-code flow with PKCE and protected MCP sessions. Access is divided into explicit scopes rather than treating a valid session as universal authority.
+The system uses OAuth authorization-code flow with PKCE and protected MCP sessions. Access is divided into explicit scopes rather than treating a valid session as universal authority.
 
-The hosted catalog currently contains **15 tools**: eight acquisition-oriented tools and seven controlled-run tools. The run tools sit behind authorities that are absent from the default acquisition grant, so discovering a capability and being allowed to execute it are separate facts.
+The hosted catalog currently contains **15 tools**: eight acquisition-oriented tools and seven controlled-run tools. Run authority is absent from the default acquisition grant, so discovering a capability and being allowed to execute it are separate facts.
 
 ### Entitlement versus execution
 
@@ -57,21 +57,21 @@ Marketplace acquisition, entitlement, provider connection, execution planning, h
 
 ### Human approval binds to exact state
 
-Approval is not a generic yes or no. A human decision binds to a specific sealed plan digest. If the underlying plan changes concurrently, the earlier decision cannot authorize the new state. Teardown uses the same principle.
+Approval binds to a specific sealed plan digest. If the underlying plan changes concurrently, the earlier decision cannot authorize the new state. Teardown uses the same principle.
 
 ### Replay and economic controls
 
 Mutations require caller-supplied idempotency keys and pass through transactional state transitions. Agent acquisition permissions and spending limits are persisted product controls rather than conversational instructions.
 
-The controlled-run mutation and recovery register currently contains **161 registered cases**, all machine-mapped to their intended proof references. The register distinguishes contract-only coverage from cases that require direct observation, so a green test is not mislabeled as provider evidence.
+The controlled-run mutation and recovery register currently contains **161 registered cases**, all machine-mapped to their intended proof references. The register separates contract-only coverage from cases that require direct observation, so a green test is not mislabeled as provider evidence.
 
 ### Capability-constrained runtime
 
 The standalone runtime uses implementation-specific capability grants with default-deny boundaries for executable access, network destinations, filesystem access, environment exposure, and secret handling. It does not dynamically execute arbitrary package-supplied JavaScript, shell, or plugins.
 
-### Reconciliation is a safety state
+### Reconciliation as a safety state
 
-A provider request can leave the local system uncertain about what actually happened. BoxFetch represents that ambiguity explicitly. Forward mutation is withheld rather than automatically retried, because retrying an uncertain external mutation can duplicate the consequence.
+A provider request can leave the local system uncertain about what actually happened. BoxFetch represents that ambiguity explicitly. Forward mutation is withheld because automatically retrying an uncertain external mutation can duplicate the consequence.
 
 ## Representative lifecycle
 
@@ -94,15 +94,15 @@ stateDiagram-v2
     TeardownComplete --> [*]
 ```
 
-`ReconciliationRequired` is intentionally a peer of `Verified`, not a retry loop.
+`ReconciliationRequired` is a peer of `Verified`, not a retry loop.
 
-## A design that changed
+## What changed after red-team testing
 
-The early agent surface was too permissive in how capability discovery and authority could meet. Red-team work showed that a broad tool surface made it too easy to reason about a valid session as though it implied useful authority over every exposed action.
+An earlier agent surface placed capability discovery and executable actions behind an authority boundary that was too broad. Red-team testing showed that session validity, tool visibility, and mutation authority could be too easily conflated.
 
-The architecture was narrowed rather than patched cosmetically. Public onboarding, hosted OAuth, acquisition authority, run preparation, execution authority, teardown authority, owner-held provider credentials, and human plan approval were separated. The current seven run tools use a scope ladder that reveals only the next authority boundary rather than walking a client automatically toward mutation or deletion.
+The architecture was narrowed structurally. Public onboarding, hosted OAuth, acquisition authority, run preparation, execution authority, teardown authority, owner-held provider credentials, and human plan approval were separated. The current seven run tools use a scope ladder that reveals only the next authority boundary instead of walking a client automatically toward mutation or deletion.
 
-The lesson was structural: **tool visibility, commercial entitlement, credential possession, and mutation authority are different powers.** The implementation now treats them that way.
+The resulting rule is simple: **tool visibility, commercial entitlement, credential possession, and mutation authority are different powers.**
 
 ## Validation evidence
 
@@ -133,8 +133,8 @@ A deterministic runtime proof builds the distributed Node 22 ESM artifact indepe
 
 ## Current boundary
 
-BoxFetch has a working controlled-execution architecture and one executable hosted integration path. It does **not** claim arbitrary third-party code execution, universal provider coverage, or that every integration has completed a real production canary. Additional execution paths remain closed until their adapter, capability grant, and evidence are separately reviewed.
+BoxFetch currently supports a working controlled-execution architecture and one reviewed hosted execution path. Additional provider paths remain closed pending separate adapter, capability-grant, direct-observation, and live-canary evidence. Arbitrary third-party code execution and universal provider coverage are outside the current system surface.
 
-The interesting engineering problem is not the marketplace itself. It is preserving useful agent autonomy while keeping spending, mutation, credentials, approval, retries, and deletion under explicit authority.
+The engineering problem is preserving useful agent autonomy while keeping spending, mutation, credentials, approval, retries, and deletion under explicit authority.
 
 [Architecture](ARCHITECTURE.md) · [Technical decisions](TECHNICAL_DECISIONS.md) · [Validation](VALIDATION.md) · [Back to profile](https://github.com/Andy11-cpu)
