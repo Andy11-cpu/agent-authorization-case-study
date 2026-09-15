@@ -1,8 +1,8 @@
-# BoxFetch Architecture
+# Agent Authorization & Controlled Execution Architecture
 
 ## Architectural objective
 
-BoxFetch separates commercial entitlement, agent authority, human approval, execution capability, provider mutation, and audit evidence. No one token, UI action, or tool call implicitly carries all of those powers.
+The system separates entitlement, agent authority, human approval, execution capability, provider mutation, and audit evidence. No one token, UI action, or tool call implicitly carries all of those powers.
 
 The README gives the high-level lifecycle. This document focuses on the authority boundaries underneath it.
 
@@ -11,7 +11,7 @@ The README gives the high-level lifecycle. This document focuses on the authorit
 | Concern | Primary authority | What it does not imply |
 |---|---|---|
 | Authentication | Valid user or OAuth session | Purchase entitlement or run authority |
-| Marketplace acquisition | Captured purchase / entitlement | Provider credential or execution approval |
+| Catalog acquisition | Captured purchase / entitlement | Provider credential or execution approval |
 | Agent discovery | Tool visibility under current grant | Permission to call a hidden or gated action |
 | Run preparation | `boxfetch:runs` | Apply or teardown authority |
 | Run inspection and apply | `boxfetch:runs.execute` plus exact owner approval | Teardown authority |
@@ -24,13 +24,13 @@ The system is designed around the absence of transitive authority. A valid fact 
 
 ## Runtime planes
 
-BoxFetch keeps identity, product state, and external provider authority separate.
+The system keeps identity, application state, and external provider authority separate.
 
 - **Identity plane:** users, authentication, and approved shared security operations.
-- **Product plane:** marketplace, credits, purchases, entitlements, agents, OAuth/MCP grants, controlled runs, and operational evidence.
+- **Application-state plane:** catalog, credits, purchases, entitlements, agents, OAuth/MCP grants, controlled runs, and operational evidence.
 - **Provider plane:** external mutation behind implementation-specific adapters and capability grants.
 
-The product and identity database authorities are also separated. A generic connection string is not accepted as a fallback for either plane.
+The application-state and identity database authorities are also separated. A generic connection string is not accepted as a fallback for either plane.
 
 ## Agent boundary
 
@@ -61,13 +61,13 @@ The runtime accepts only known implementations with explicit capability grants. 
 - no arbitrary package-supplied shell
 - no dynamic execution of arbitrary package JavaScript
 
-A package can be commercially deliverable without being executable by the hosted runtime. Execution support is an independently reviewed capability.
+A package can be deliverable through the catalog without being executable by the hosted runtime. Execution support is an independently reviewed capability.
 
-## Commercial and spending controls
+## Entitlement and spending controls
 
-The product plane includes an internal credit ledger, purchases, entitlements, agent acquisition permissions, and spending limits. These are durable product controls rather than prompt instructions.
+The application-state plane includes an internal credit ledger, purchases, entitlements, agent acquisition permissions, and spending limits. These are durable policy controls rather than prompt instructions.
 
-Commercial entitlement answers whether an owner or agent has acquired an asset. It does not answer whether a provider mutation is authorized, which credential may be used, or whether a human has approved the exact plan.
+Entitlement answers whether an owner or agent has acquired an asset. It does not answer whether a provider mutation is authorized, which credential may be used, or whether a human has approved the exact plan.
 
 ## Concurrency and replay
 

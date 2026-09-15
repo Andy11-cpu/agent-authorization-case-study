@@ -1,8 +1,8 @@
-# BoxFetch Technical Decisions
+# Agent Authorization & Controlled Execution Technical Decisions
 
 ## 1. Separate entitlement from execution authority
 
-A purchased capability is not automatically executable. Commercial entitlement, runtime eligibility, connection authority, human approval, and provider mutation remain distinct states.
+A purchased capability is not automatically executable. Entitlement, runtime eligibility, connection authority, human approval, and provider mutation remain distinct states.
 
 ## 2. Use incremental scope escalation
 
@@ -14,7 +14,7 @@ Approvals attach to exact plan identities. If a plan changes, the approval does 
 
 ## 4. Make ambiguous mutations non-retryable by default
 
-External providers can respond ambiguously. Retrying can duplicate an operation. BoxFetch therefore moves uncertain dispatches into reconciliation-required state rather than assuming idempotence at the provider boundary.
+External providers can respond ambiguously. Retrying can duplicate an operation. The system therefore moves uncertain dispatches into reconciliation-required state rather than assuming idempotence at the provider boundary.
 
 ## 5. Keep owner and agent projections different
 

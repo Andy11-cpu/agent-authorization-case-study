@@ -1,6 +1,6 @@
-# BoxFetch Validation
+# Agent Authorization & Controlled Execution Validation
 
-BoxFetch uses separate evidence layers because protocol correctness, authorization correctness, execution safety, and real-provider behavior are different claims.
+The system uses separate evidence layers because protocol correctness, authorization correctness, execution safety, and real-provider behavior are different claims.
 
 ## Pull-request quality gate
 
@@ -12,7 +12,7 @@ The local equivalent runs the same major layers sequentially rather than treatin
 
 The repository separates four major test classes:
 
-1. **Unit** for product behavior outside the security roots.
+1. **Unit** for application behavior outside the security roots.
 2. **Security-core** for money, wallet, transaction, provider, auth, OAuth, and MCP behavior.
 3. **Operations** for generators, static boundaries, operator scripts, and acceptance tooling.
 4. **Disposable PostgreSQL proofs** for lifecycle, persistence, concurrency, and behaviors that a store double cannot prove.
@@ -26,7 +26,7 @@ The current hosted catalog contains **15 tools**:
 - **8 acquisition-oriented tools**
 - **7 controlled-run tools**
 
-The seven run tools require authorities outside the default acquisition grant. TypeScript and Python client proof harnesses exercise MCP interoperability independently rather than relying only on BoxFetch's own internal caller.
+The seven run tools require authorities outside the default acquisition grant. TypeScript and Python client proof harnesses exercise MCP interoperability independently rather than relying only on the system's own internal caller.
 
 ## OAuth and authority evidence
 
@@ -38,7 +38,7 @@ The scope ladder exposes only the next missing run authority. It does not automa
 
 Every pull request builds the distributable Node 22 ESM runtime artifact independently from the source tree.
 
-The proof derives the actual dependency closure from the build output, rejects undeclared or missing closure entries, scans distributed bytes for source maps, local absolute paths, environment-secret values, and private-plane tokens, and then runs the artifact against all **six delivered BoxFetch Original packages**.
+The proof derives the actual dependency closure from the build output, rejects undeclared or missing closure entries, scans distributed bytes for source maps, local absolute paths, environment-secret values, and private-plane tokens, and then runs the artifact against all **six delivered reference Original packages**.
 
 The proof also exercises refusal cases, including tampered packages, incompatible runtime ranges, unapproved apply, missing or foreign approved-plan digests, and unapproved teardown.
 
@@ -77,6 +77,6 @@ Ambiguous dispatched mutations are exercised as a distinct lifecycle outcome. Th
 
 ## Claim boundary
 
-The public case study supports the claim that BoxFetch has a working controlled-execution architecture with scoped agent access, human approval, spending and entitlement controls, idempotent lifecycle state, constrained runtime behavior, and layered verification.
+The public case study supports the claim that the system has a working controlled-execution architecture with scoped agent access, human approval, spending and entitlement controls, idempotent lifecycle state, constrained runtime behavior, and layered verification.
 
 It does not claim arbitrary third-party code execution, universal provider coverage, or that every integration has completed a real production canary. The evidence register explicitly carries outstanding direct-observation work where that stronger proof does not yet exist.
