@@ -38,7 +38,7 @@ The scope ladder exposes only the next missing run authority. It does not automa
 
 Every pull request builds the distributable Node 22 ESM runtime artifact independently from the source tree.
 
-The proof derives the actual dependency closure from the build output, rejects undeclared or missing closure entries, scans distributed bytes for source maps, local absolute paths, environment-secret values, and private-plane tokens, and then runs the artifact against all **six delivered reference Original packages**.
+The proof derives the actual dependency closure from the build output, rejects undeclared or missing closure entries, scans distributed bytes for source maps, local absolute paths, environment-secret values, and private-plane tokens, and then runs the artifact against all **six delivered reference packages**.
 
 The proof also exercises refusal cases, including tampered packages, incompatible runtime ranges, unapproved apply, missing or foreign approved-plan digests, and unapproved teardown.
 
